@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenDevMate</title>
+  <link rel="stylesheet" href="/assets/console.css">
+  <script>document.documentElement.lang = new URLSearchParams(location.search).get("lang") === "en" ? "en" : "zh-CN";</script>
+</head>
+<body>
+  <div class="shell" data-shell="studio">
+    <header class="top">
+      <div class="brand"><span class="mark">OD</span><div><strong>OpenDevMate</strong><small><span class="zh">本地项目和任务</span><span class="en">Local projects and tasks</span></small></div></div>
+      <nav class="lang"><button type="button" data-lang="zh">中文</button><button type="button" data-lang="en">English</button></nav>
+    </header>
+    <main class="layout">
+      <section class="panel">
+<p class="note"><span class="zh">数量来自本机记录。创建项目后可以继续加任务。</span><span class="en">Counts come from local records. Create a project, then add a task.</span></p>
+<label><span class="zh">项目名称</span><span class="en">Project name</span></label>
+<input id="name" value="demo">
+<label><span class="zh">说明</span><span class="en">Description</span></label>
+<input id="description" value="说明">
+<label><span class="zh">项目编号</span><span class="en">Project id</span></label>
+<input id="project" placeholder="id">
+<label><span class="zh">任务标题</span><span class="en">Task title</span></label>
+<input id="title" value="第一项">
+<div class="actions">
+  <button class="primary" id="refresh" type="button"><span class="zh">刷新数量</span><span class="en">Refresh counts</span></button>
+  <button id="create" type="button"><span class="zh">创建项目</span><span class="en">Create project</span></button>
+  <button id="projects" type="button"><span class="zh">项目列表</span><span class="en">Projects</span></button>
+  <button id="add-task" type="button"><span class="zh">添加任务</span><span class="en">Add task</span></button>
+  <button id="tasks" type="button"><span class="zh">任务列表</span><span class="en">Tasks</span></button>
+</div>
+</section>
+      <section class="panel"><pre id="out" class="out"></pre></section>
+    </main>
+  </div>
+  <script src="/assets/console.js"></script>
+  <script src="/assets/page.js"></script>
+</body>
+</html>

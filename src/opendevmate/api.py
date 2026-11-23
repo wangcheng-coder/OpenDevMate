@@ -7,6 +7,8 @@ import os
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from opendevmate.i18n import current_locale, install, text
@@ -74,10 +76,21 @@ class KnowledgeIn(BaseModel):
     source: str
 
 
+def _mount_console(app: FastAPI) -> None:
+    web = Path(__file__).resolve().parent / "web"
+
+    @app.get("/", include_in_schema=False)
+    def console_page():
+        return FileResponse(web / "index.html")
+
+    app.mount("/assets", StaticFiles(directory=web), name="assets")
+
+
 def create_app(store: Store | None = None, workspace: Path | None = None) -> FastAPI:
-    app = FastAPI(title="OpenDevMate", version="0.1.7")
+    app = FastAPI(title="OpenDevMate", version="0.1.8")
     install(app)
     mount(app)
+    _mount_console(app)
     app.state.store = store or Store(os.environ.get("OPENDEVMATE_DB", "opendevmate.sqlite3"))
     app.state.workspace = workspace or BASE
 

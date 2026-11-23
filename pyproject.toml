@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "opendevmate"
-version = "0.1.7"
+version = "0.1.8"
 description = "管理多个 AI Coding Agent 的项目、任务、执行记录和验收。"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -23,3 +23,6 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.setuptools.package-data]
+opendevmate = ["web/*"]
