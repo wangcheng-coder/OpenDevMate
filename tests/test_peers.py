@@ -23,7 +23,7 @@ def test_contract_blocks_out_of_scope_and_failed_tests():
     store.transition(task["id"], "review")
     with pytest.raises(DomainError):
         store.add_review(task["id"], "范围看起来没问题", "low", True)
-    store.transition(task["id"], "blocked")
+    store.transition(task["id"], "blocked", "diff 超出约定范围")
 
     other = store.create_task(project["id"], "补测试", "只改 src")
     store.set_contract(other["id"], ["pytest 通过"], ["src"])
@@ -33,7 +33,7 @@ def test_contract_blocks_out_of_scope_and_failed_tests():
     store.transition(other["id"], "review")
     with pytest.raises(DomainError):
         store.add_review(other["id"], "测试还没绿", "low", True)
-    store.transition(other["id"], "blocked")
+    store.transition(other["id"], "blocked", "测试还没有通过")
 
     third = store.create_task(project["id"], "收尾", "只改 src")
     store.set_contract(third["id"], ["pytest 通过"], ["src"])

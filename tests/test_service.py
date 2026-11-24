@@ -77,3 +77,14 @@ def test_api_project_and_dashboard(tmp_path: Path):
     page = client.get("/dashboard")
     assert page.status_code == 200
     assert "OpenDevMate" in page.text
+    blocked = client.post(
+        f"/api/tasks/{task['id']}/transition",
+        json={"status": "blocked"},
+    )
+    assert blocked.status_code == 400
+    with_reason = client.post(
+        f"/api/tasks/{task['id']}/transition",
+        json={"status": "blocked", "reason": "等待接口说明"},
+    )
+    assert with_reason.status_code == 200
+    assert with_reason.json()["block_reason"] == "等待接口说明"

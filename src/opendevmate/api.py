@@ -36,6 +36,7 @@ class TaskIn(BaseModel):
 
 class TransitionIn(BaseModel):
     status: str
+    reason: str = ""
 
 
 class SplitIn(BaseModel):
@@ -134,7 +135,7 @@ def create_app(store: Store | None = None, workspace: Path | None = None) -> Fas
 
     @app.post("/api/tasks/{task_id}/transition")
     def transition(task_id: str, body: TransitionIn):
-        return run(lambda: app.state.store.transition(task_id, body.status))
+        return run(lambda: app.state.store.transition(task_id, body.status, body.reason))
 
     @app.post("/api/tasks/{task_id}/split")
     def split(task_id: str, body: SplitIn):

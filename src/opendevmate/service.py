@@ -58,7 +58,7 @@ class Store:
             CREATE TABLE IF NOT EXISTS tasks (
               id TEXT PRIMARY KEY, project_id TEXT NOT NULL, parent_id TEXT,
               title TEXT NOT NULL, description TEXT NOT NULL, status TEXT NOT NULL,
-              created_at TEXT NOT NULL
+              created_at TEXT NOT NULL, block_reason TEXT NOT NULL DEFAULT ''
             );
             CREATE TABLE IF NOT EXISTS executions (
               id TEXT PRIMARY KEY, task_id TEXT NOT NULL, instruction TEXT NOT NULL,
@@ -90,6 +90,10 @@ class Store:
             );
             """
         )
+        columns = {row[1] for row in self.conn.execute("PRAGMA table_info(tasks)")}
+        if "block_reason" not in columns:
+            self.conn.execute("ALTER TABLE tasks ADD COLUMN block_reason TEXT NOT NULL DEFAULT ''")
+            self.conn.commit()
 
     def create_project(self, name: str, description: str, repo_url: str = "") -> dict:
         name = name.strip()
@@ -131,7 +135,7 @@ class Store:
             "created_at": _now(),
         }
         self.conn.execute(
-            "INSERT INTO tasks VALUES (:id,:project_id,:parent_id,:title,:description,:status,:created_at)",
+            "INSERT INTO tasks (id,project_id,parent_id,title,description,status,created_at) VALUES (:id,:project_id,:parent_id,:title,:description,:status,:created_at)",
             row,
         )
         self.conn.commit()
@@ -150,13 +154,19 @@ class Store:
             raise DomainError("任务不存在")
         return dict(row)
 
-    def transition(self, task_id: str, status: str) -> dict:
+    def transition(self, task_id: str, status: str, reason: str = "") -> dict:
         task = self.get_task(task_id)
         if status not in TRANSITIONS.get(task["status"], set()):
             raise DomainError(f"不能从 {task['status']} 改为 {status}")
         if status == "running":
             self._ensure_no_overlap(task)
-        self.conn.execute("UPDATE tasks SET status=? WHERE id=?", (status, task_id))
+        if status == "blocked" and not str(reason).strip():
+            raise DomainError("阻塞要写明原因")
+        block_reason = str(reason).strip() if status == "blocked" else ""
+        self.conn.execute(
+            "UPDATE tasks SET status=?, block_reason=? WHERE id=?",
+            (status, block_reason, task_id),
+        )
         self.conn.commit()
         return self.get_task(task_id)
 

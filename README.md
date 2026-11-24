@@ -7,7 +7,7 @@ OpenDevMate 帮助人管理 AI Coding Agent 的工作，不替代 Agent 写代�
 ## 0.1.0 能做什么
 
 - 建立项目和任务，并把一个任务拆成子任务。
-- 任务状态只允许 `draft → ready → running → review → accepted`，也可以进入 `blocked`。
+- 任务状态只允许 `draft → ready → running → review → accepted`，也可以进入 `blocked`。进入 `blocked` 必须写下原因，离开阻塞后原因清空。
 - 按项目知识生成一份可复制给 Agent 的任务说明。
 - 记录执行结果、Diff、测试数量和审查结论。高风险审查不能直接验收。
 - 扫描允许目录内的文件类型和顶层模块，拒绝目录之外的路径。
