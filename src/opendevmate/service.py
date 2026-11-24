@@ -432,7 +432,7 @@ def scan_directory(root: Path, base: Path, limit: int = 5000) -> dict:
     modules: dict[str, int] = {}
     files = 0
     for path in root.rglob("*"):
-        if any(part in SKIP_DIRS for part in path.parts):
+        if any(part in SKIP_DIRS for part in path.relative_to(root).parts):
             continue
         if not path.is_file():
             continue
@@ -488,18 +488,28 @@ def _sensitive(path: str) -> bool:
     )
 
 
+def _repo_path(path: str) -> str:
+    normal = path.replace("\\", "/")
+    while normal.startswith("./"):
+        normal = normal[2:]
+    return normal
+
+
 def _ranges_overlap(left: list[str], right: list[str]) -> bool:
     for one in left:
+        one_path = _repo_path(one).rstrip("/")
         for other in right:
-            if one == other or one.startswith(other.rstrip("/") + "/") or other.startswith(one.rstrip("/") + "/"):
+            other_path = _repo_path(other).rstrip("/")
+            if one_path == other_path or one_path.startswith(other_path + "/") or other_path.startswith(one_path + "/"):
                 return True
     return False
 
 
 def _within(path: str, touches: list[str]) -> bool:
-    normal = path.replace("\\", "/").lstrip("./")
+    normal = _repo_path(path)
     for touch in touches:
-        if normal == touch or normal.startswith(touch.rstrip("/") + "/"):
+        prefix = _repo_path(touch).rstrip("/")
+        if normal == prefix or normal.startswith(prefix + "/"):
             return True
     return False
 
@@ -513,7 +523,7 @@ def import_github_issues(store: Store, project_id: str, issues: list[dict], toke
     for issue in issues:
         number = int(issue["number"])
         marker = f"github:{number}"
-        if any(marker in (task["description"] or "") for task in existing):
+        if any((task["description"] or "").split("\n", 1)[0] == marker for task in existing):
             continue
         title = _redact_secrets(f"[GitHub #{number}] {str(issue.get('title') or '').strip()}")
         body = _redact_secrets(str(issue.get("body") or ""))

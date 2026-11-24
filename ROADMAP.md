@@ -2,10 +2,10 @@
 
 ## 远程仓库
 
-- 仓库：https://github.com/1455224865w-cmd/OpenDevMate
+- 仓库：https://github.com/wangcheng-coder/OpenDevMate
 - `main` 已推送初始提交 `9885451`。
 - CI 工作流是 `.github/workflows/ci.yml`，只安装项目并运行 `pytest`。
-- 首次推送的运行已成功：https://github.com/1455224865w-cmd/OpenDevMate/actions/runs/44689637795
+- 首次推送的运行已成功：https://github.com/wangcheng-coder/OpenDevMate/actions/runs/44689637795
 - Milestone「0.2 下一步」跟踪下面三个 Issue：
   - #1 用 PostgreSQL 保存项目和任务
   - #2 只读同步 GitHub Issue

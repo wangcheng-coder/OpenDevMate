@@ -88,3 +88,25 @@ def test_diff_rejects_secret_and_parent_paths():
         store.add_diff(task["id"], "越界", ["../outside.py"])
     saved = store.add_diff(task["id"], "范围内", ["src/app.py"])
     assert saved["files"] == ["src/app.py"]
+
+
+def test_dot_directory_matches_only_the_declared_prefix():
+    store = Store(":memory:")
+    project = store.create_project("demo", "管理一个示例仓库")
+    task = store.create_task(project["id"], "改工作流", ".github")
+    store.set_contract(task["id"], ["ci 通过"], [".github"])
+    _ready(store, task["id"])
+    store.add_diff(task["id"], "工作流", [".github/workflows/ci.yml"])
+    store.add_test_run(task["id"], 1, 0, "通过")
+    store.transition(task["id"], "review")
+    store.add_review(task["id"], "范围符合", "low", True)
+    assert store.get_task(task["id"])["status"] == "accepted"
+
+    other = store.create_task(project["id"], "误匹配", "github")
+    store.set_contract(other["id"], ["ci 通过"], ["github"])
+    _ready(store, other["id"])
+    store.add_diff(other["id"], "工作流", [".github/workflows/ci.yml"])
+    store.add_test_run(other["id"], 1, 0, "通过")
+    store.transition(other["id"], "review")
+    with pytest.raises(DomainError):
+        store.add_review(other["id"], "范围不符合", "low", True)

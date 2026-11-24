@@ -20,6 +20,14 @@ def test_github_import_keeps_local_tasks_and_drops_token(tmp_path):
     saved = store.list_tasks(project["id"])
     assert all(token not in (task["title"] + task["description"]) for task in saved)
     assert len(saved) == 2
+    imported = import_github_issues(
+        store,
+        project["id"],
+        [{"number": 12, "title": "十二"}, {"number": 1, "title": "一"}],
+        True,
+    )
+    assert [item["title"] for item in imported] == ["[GitHub #12] 十二", "[GitHub #1] 一"]
+    assert len(store.list_tasks(project["id"])) == 4
 
 
 def test_agent_only_runs_inside_isolated_workspace(tmp_path):

@@ -1,7 +1,7 @@
 services:
   api:
     build: .
-    image: ghcr.io/1455224865w-cmd/opendevmate:local
+    image: ghcr.io/wangcheng-coder/opendevmate:local
     environment:
       APP_HOST: 0.0.0.0
       APP_PORT: ${APP_PORT:-8000}

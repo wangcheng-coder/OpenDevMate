@@ -55,6 +55,13 @@ def test_scan_stays_inside_workspace(tmp_path: Path):
     outside.mkdir()
     with pytest.raises(DomainError):
         scan_directory(outside, base)
+    nested = tmp_path / "target" / "workspace" / "sample"
+    (nested / "src").mkdir(parents=True)
+    (nested / "src" / "App.java").write_text("class App {}", encoding="utf-8")
+    (nested / "target").mkdir()
+    (nested / "target" / "Gen.java").write_text("class Gen {}", encoding="utf-8")
+    nested_report = scan_directory(nested, tmp_path / "target" / "workspace")
+    assert nested_report["file_count"] == 1
 
 
 def test_api_project_and_dashboard(tmp_path: Path):
