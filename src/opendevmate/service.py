@@ -421,6 +421,11 @@ class Store:
         open_risks = self.conn.execute(
             "SELECT COUNT(*) FROM reviews WHERE accepted=0 AND risk IN ('medium','high')"
         ).fetchone()[0]
+        blocked = [
+            {"id": task["id"], "title": task["title"], "reason": task.get("block_reason") or ""}
+            for task in tasks
+            if task["status"] == "blocked"
+        ]
         return {
             "project_count": len(projects),
             "task_count": len(tasks),
@@ -428,6 +433,7 @@ class Store:
             "execution_count": executions,
             "failed_execution_count": failed,
             "open_risk_count": open_risks,
+            "blocked_tasks": blocked,
         }
 
 

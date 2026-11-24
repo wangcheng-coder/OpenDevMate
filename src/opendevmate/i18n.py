@@ -161,6 +161,9 @@ TEXT = {
         "dashboard.risks": "未关闭风险",
         "dashboard.status": "状态",
         "dashboard.count": "数量",
+        "dashboard.blocked": "阻塞任务",
+        "dashboard.task": "任务",
+        "dashboard.reason": "原因",
     },
     "en": {
         "meta.ready": "The current language is English. The MCP endpoint is /mcp for a Spring AI Streamable HTTP client.",
@@ -181,5 +184,8 @@ TEXT = {
         "dashboard.risks": "Open risks",
         "dashboard.status": "Status",
         "dashboard.count": "Count",
+        "dashboard.blocked": "Blocked tasks",
+        "dashboard.task": "Task",
+        "dashboard.reason": "Reason",
     },
 }

@@ -88,3 +88,6 @@ def test_api_project_and_dashboard(tmp_path: Path):
     )
     assert with_reason.status_code == 200
     assert with_reason.json()["block_reason"] == "等待接口说明"
+    board = client.get("/api/dashboard").json()
+    assert board["blocked_tasks"][0]["reason"] == "等待接口说明"
+    assert "等待接口说明" in client.get("/dashboard").text

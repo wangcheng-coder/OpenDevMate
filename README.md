@@ -11,7 +11,7 @@ OpenDevMate 帮助人管理 AI Coding Agent 的工作，不替代 Agent 写代�
 - 按项目知识生成一份可复制给 Agent 的任务说明。
 - 记录执行结果、Diff、测试数量和审查结论。高风险审查不能直接验收。
 - 扫描允许目录内的文件类型和顶层模块，拒绝目录之外的路径。
-- 提供 `/api/dashboard` 和 `/dashboard`。
+- 提供 `/api/dashboard` 和 `/dashboard`。看板上列出仍在阻塞的任务和原因。
 
 ## 现在不做什么
 

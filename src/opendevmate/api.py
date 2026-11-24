@@ -193,6 +193,10 @@ def create_app(store: Store | None = None, workspace: Path | None = None) -> Fas
             f"<tr><td>{html.escape(status)}</td><td>{count}</td></tr>"
             for status, count in data["tasks_by_status"].items()
         )
+        blocked_rows = "".join(
+            f"<tr><td>{html.escape(item['title'])}</td><td>{html.escape(item['reason'])}</td></tr>"
+            for item in data["blocked_tasks"]
+        )
         lang = "en" if locale == "en" else "zh-CN"
         page = f"""<!DOCTYPE html>
 <html lang="{lang}"><head><meta charset="utf-8"><title>OpenDevMate</title></head>
@@ -200,6 +204,8 @@ def create_app(store: Store | None = None, workspace: Path | None = None) -> Fas
 <h1>OpenDevMate</h1>
 <p>{html.escape(text("dashboard.projects", locale))} {data['project_count']}，{html.escape(text("dashboard.tasks", locale))} {data['task_count']}，{html.escape(text("dashboard.executions", locale))} {data['execution_count']}，{html.escape(text("dashboard.failed", locale))} {data['failed_execution_count']}，{html.escape(text("dashboard.risks", locale))} {data['open_risk_count']}</p>
 <table border="1"><tr><th>{html.escape(text("dashboard.status", locale))}</th><th>{html.escape(text("dashboard.count", locale))}</th></tr>{rows}</table>
+<h2>{html.escape(text("dashboard.blocked", locale))}</h2>
+<table border="1"><tr><th>{html.escape(text("dashboard.task", locale))}</th><th>{html.escape(text("dashboard.reason", locale))}</th></tr>{blocked_rows}</table>
 </body></html>"""
         from fastapi.responses import HTMLResponse
 
